@@ -67,7 +67,7 @@ public class window1Client extends JInternalFrame implements ActionListener, Run
     @Override
     public void actionPerformed(ActionEvent ae) {
         if (ae.getSource().equals(btnInitSesion)) {
-            System.out.println("inicia");
+            String strNombre=tfUsuario.getText();
         }
 
     }
