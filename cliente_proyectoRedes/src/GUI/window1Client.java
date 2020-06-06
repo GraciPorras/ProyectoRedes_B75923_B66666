@@ -6,9 +6,11 @@
 package GUI;
 
 import cliente_proyectoredes.myClient;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
@@ -22,7 +24,7 @@ public class window1Client extends JInternalFrame implements ActionListener, Run
     JButton btnInitSesion;
     JLabel lbUsuario, lbContrasenna;
     JTextField tfUsuario, tfContrasenna;
-
+    myClient Client;
     public window1Client(myClient Client) {
         super();
         
@@ -63,11 +65,22 @@ public class window1Client extends JInternalFrame implements ActionListener, Run
         this.add(this.btnInitSesion);
         this.btnInitSesion.addActionListener(this);
     }
+    
 
     @Override
     public void actionPerformed(ActionEvent ae) {
         if (ae.getSource().equals(btnInitSesion)) {
-            System.out.println("inicia");
+            JFrame jFrame = new JFrame("Iniciar Sesiones");
+            
+            jFrame.setPreferredSize(new Dimension(700, 400));
+
+            jFrame.add(new window2Client(Client));
+            jFrame.pack();
+
+            jFrame.setLocationRelativeTo(null);
+            jFrame.setResizable(false);
+
+            jFrame.setVisible(true);
         }
 
     }
