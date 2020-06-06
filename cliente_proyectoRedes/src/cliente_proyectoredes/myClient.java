@@ -40,8 +40,8 @@ public class myClient  extends Thread{
             receive = new BufferedReader(new InputStreamReader(socket.getInputStream()));//Objeto que recibo 
             
             while (true) {
-               //System.out.println(receive.readLine());
-               //send.println("Holiiiiiii");
+               System.out.println(receive.readLine());
+               
 
             }
 
@@ -52,4 +52,22 @@ public class myClient  extends Thread{
             Logger.getLogger(myClient.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+
+    public PrintStream getSend() {
+        return send;
+    }
+
+    public void setSend(PrintStream send) {
+        this.send = send;
+    }
+
+    public BufferedReader getReceive() {
+        return receive;
+    }
+
+    public void setReceive(BufferedReader receive) {
+        this.receive = receive;
+    }
+    
+    
 }

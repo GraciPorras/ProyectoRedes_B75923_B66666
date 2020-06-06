@@ -18,10 +18,10 @@ public class window2Client extends JInternalFrame implements ActionListener, Run
     JLabel lbArchivo, lbContrasenna;
     JTextField tfArchivo, tfContrasenna;
      private JFileChooser jfileChooser;
-
+     myClient Client; 
     public window2Client(myClient Client) {
         super();
-        
+        this.Client=Client;
         init();
     }//Constructor
 
@@ -54,6 +54,9 @@ public class window2Client extends JInternalFrame implements ActionListener, Run
     @Override
     public void actionPerformed(ActionEvent ae) {
         if (ae.getSource().equals(btnAgregaArchivo)) {
+            
+            Client.getSend().println("Holiiiiiii");
+                    
             JFileChooser fileChooser = new JFileChooser();
             fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
     
@@ -77,7 +80,6 @@ public class window2Client extends JInternalFrame implements ActionListener, Run
 
     @Override
     public void run() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
 }

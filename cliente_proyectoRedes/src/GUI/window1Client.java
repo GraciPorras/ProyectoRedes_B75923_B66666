@@ -27,7 +27,7 @@ public class window1Client extends JInternalFrame implements ActionListener, Run
     myClient Client;
     public window1Client(myClient Client) {
         super();
-        
+        this.Client=Client;
         init();
     }//Constructor
 
