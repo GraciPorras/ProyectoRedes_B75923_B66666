@@ -18,10 +18,11 @@ public class window2Client extends JInternalFrame implements ActionListener, Run
     JLabel lbArchivo, lbContrasenna;
     JTextField tfArchivo, tfContrasenna;
      private JFileChooser jfileChooser;
+     myClient client;
 
     public window2Client(myClient Client) {
         super();
-        
+        this.client= Client;
         init();
     }//Constructor
 
@@ -37,6 +38,7 @@ public class window2Client extends JInternalFrame implements ActionListener, Run
         this.lbArchivo = new JLabel("Buscar Archivo");
         this.tfArchivo = new JTextField();
         this.btnAgregaArchivo = new JButton("Buscar");
+        this.btnEnviarArchivo = new JButton("Enviar");
 
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 
@@ -49,6 +51,10 @@ public class window2Client extends JInternalFrame implements ActionListener, Run
         this.btnAgregaArchivo.setBounds(320, 50, 80, 20);
         this.add(this.btnAgregaArchivo);
         this.btnAgregaArchivo.addActionListener(this);
+        
+        this.btnEnviarArchivo.setBounds(320, 300, 80, 20);
+        this.add(this.btnEnviarArchivo);
+        this.btnEnviarArchivo.addActionListener(this);
     }
 
     @Override
@@ -71,6 +77,8 @@ public class window2Client extends JInternalFrame implements ActionListener, Run
                 }
             }
 
+        }else if(ae.getSource().equals(btnEnviarArchivo)){
+            client.enviaFichero("C:/Users/ronal/Documents/NetBeansProjects/kitt.png","localhost",6666);
         }
 
     }

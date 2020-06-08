@@ -27,7 +27,7 @@ public class Cliente_proyectoRedes {
         myClient client = new myClient(6666);
         client.start();
 
-        JFrame jFrame = new JFrame("Hilos con Graficos");
+        JFrame jFrame = new JFrame("Cliente FTP");
         jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         jFrame.setPreferredSize(new Dimension(400, 500));
