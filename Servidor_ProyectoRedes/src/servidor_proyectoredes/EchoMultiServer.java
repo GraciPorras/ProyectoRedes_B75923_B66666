@@ -1,4 +1,4 @@
-/*
+    /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -7,11 +7,14 @@ package servidor_proyectoredes;
 
 
 import domain.Fichero;
+import domain.pideRuta;
 import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
@@ -46,6 +49,7 @@ public class EchoMultiServer extends Thread {
             ServerSocket socketServidor = new ServerSocket(puerto);
 
             // Se espera un cliente
+            System.out.println("Esperando a que se conecte un cliente");
             Socket cliente = socketServidor.accept();
 
             // Llega un cliente.
@@ -60,10 +64,19 @@ public class EchoMultiServer extends Thread {
             ObjectInputStream ois = new ObjectInputStream(cliente
                     .getInputStream());
             Object mensaje = ois.readObject();
-            
-            // Si el mensaje es de petici�n de fichero
-            if (mensaje instanceof Fichero)
+            System.out.println("sssssssssssssssssssss");
+            if (mensaje instanceof pideRuta)
             {
+                
+                
+                // Se muestra en pantalla el fichero pedido y se envia
+                System.out.println("Me piden: "
+                        + ((pideRuta) mensaje).nombreFichero);
+                enviaFichero(((pideRuta) mensaje).nombreFichero,
+                       new ObjectOutputStream(cliente.getOutputStream()));
+                
+            }else  if(mensaje instanceof Fichero){
+                System.out.println("eeeeeeeeeeeeeeeeee");
                 Fichero mensajeRecibido = (Fichero) mensaje;
                 // Se abre un fichero para empezar a copiar lo que se reciba.
                 FileOutputStream fos = new FileOutputStream(mensajeRecibido.nombreFichero);
@@ -123,6 +136,69 @@ public class EchoMultiServer extends Thread {
             // Cierre de sockets 
             cliente.close();
             socketServidor.close();
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+    
+       
+    private void enviaFichero(String fichero, ObjectOutputStream oos)
+    {
+        try
+        {
+            System.out.println("sssssssssssssssssssss");
+            boolean enviadoUltimo=false;
+            // Se abre el fichero.
+            FileInputStream fis = new FileInputStream(fichero);
+            
+            // Se instancia y rellena un mensaje de envio de fichero
+            Fichero mensaje = new Fichero();
+            mensaje.nombreFichero = fichero;
+            
+            // Se leen los primeros bytes del fichero en un campo del mensaje
+            int leidos = fis.read(mensaje.contenidoFichero);
+            
+            // Bucle mientras se vayan leyendo datos del fichero
+            while (leidos > -1)
+            {
+                
+                // Se rellena el n�mero de bytes leidos
+                mensaje.bytesValidos = leidos;
+                
+                // Si no se han leido el m�ximo de bytes, es porque el fichero
+                // se ha acabado y este es el �ltimo mensaje
+                if (leidos < Fichero.LONGITUD_MAXIMA)
+                {
+                    mensaje.ultimoMensaje = true;
+                    enviadoUltimo=true;
+                }
+                else{
+                    mensaje.ultimoMensaje = false;
+                }
+                // Se env�a por el socket
+                oos.writeObject(mensaje);
+                
+                // Si es el �ltimo mensaje, salimos del bucle.
+                if (mensaje.ultimoMensaje)
+                    break;
+                
+                // Se crea un nuevo mensaje
+                mensaje = new Fichero();
+                mensaje.nombreFichero = fichero;
+                
+                // y se leen sus bytes.
+                leidos = fis.read(mensaje.contenidoFichero);
+            }
+            
+            if (enviadoUltimo==false)
+            {
+                mensaje.ultimoMensaje=true;
+                mensaje.bytesValidos=0;
+                oos.writeObject(mensaje);
+            }
+            // Se cierra el ObjectOutputStream
+            oos.close();
         } catch (Exception e)
         {
             e.printStackTrace();

@@ -35,8 +35,7 @@ public class Cliente_proyectoRedes {
         jFrame.add(new window1Client(client));
 
         jFrame.pack();
-        jFrame.setBounds(20, 20, 400, 400);
-//        jFrame.setLocationRelativeTo(null);
+       jFrame.setLocationRelativeTo(null);
         jFrame.setResizable(false);
 
         jFrame.setVisible(true);

@@ -71,7 +71,7 @@ public class windowServer extends JInternalFrame implements ActionListener, Runn
         if (ae.getSource().equals(btnRegistrar)) {
             String ruta;
             //ruta ="C:/Users/Graciela Porras/Desktop/U/"+this.tfUsuario.getText(); // rutaGraciPorras
-            ruta = "carpetas/"+this.tfUsuario.getText();//Ruta Fronital
+            ruta = "CarpetasUsuario/"+this.tfUsuario.getText();//Ruta Fronital
             File directorio = new File(ruta);
             if (!directorio.exists()) {
                 if (directorio.mkdirs()) {
