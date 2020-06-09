@@ -10,6 +10,7 @@ import com.mysql.jdbc.ResultSetImpl;
 import com.mysql.jdbc.Statement;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 /**
  *
@@ -37,21 +38,39 @@ public class Conexion {
         }
     }
 
-    public boolean verificarUsuario(String usuario, String contrasenna) throws SQLException {
-        boolean salida = false;
+    public String verificarUsuario(String usuario, String contrasenna) throws SQLException {
+        String salida = "";
         con = (Connection) DriverManager.getConnection(url, user, pass);
         Statement s = (Statement) con.createStatement();
         ResultSetImpl rs = (ResultSetImpl) s.executeQuery("CALL sp_verificarUsuario ('" + usuario + "','" + contrasenna + "');");
         while (rs.next()) {
-            if (rs.getInt(1) == 1) {
+            if (rs.getInt(2) == 1) {
                 System.out.println("Si esta correcto");
-                salida = true;
+                salida = rs.getString(3)+":"+rs.getInt(1);
             } else {
                 System.out.println("Usuario incorrecto");
-                salida = false;
+                salida = "incorrecto";
             }
         }
         con.close();
         return salida;
+    }
+    public void insertarUsuarioArchivo (int idUsuario, String nombreArchivo) throws SQLException{
+        con=(Connection) DriverManager.getConnection(url,user,pass);
+        Statement instruccion = (Statement) con.createStatement();
+        instruccion.execute("CALL sp_insertarUsuarioArchivo ('"+idUsuario+"','"+nombreArchivo+"');");
+        con.close(); 
+    }
+    public ArrayList<String> listarRepositorio(int id) throws SQLException{
+        con=(Connection) DriverManager.getConnection(url,user,pass);
+        Statement s = (Statement) con.createStatement();
+        ResultSetImpl rs = (ResultSetImpl) s.executeQuery("CALL sp_listarRepositorio('"+id+"')");
+        ArrayList<String> reposi = new ArrayList<String>();
+        int cont=0;
+        while (rs.next()){
+            reposi.add(rs.getString(1));
+        }
+        con.close();
+        return reposi;
     }
 }

@@ -19,7 +19,7 @@ public class Servidor_ProyectoRedes {
         EchoMultiServer serverMulti=new EchoMultiServer(6666);
         serverMulti.start();
         
-        JFrame jFrame = new JFrame("Hilos con Graficos");
+        JFrame jFrame = new JFrame("Servidor FTP");
         jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         jFrame.setPreferredSize(new Dimension(400, 500));
@@ -27,8 +27,8 @@ public class Servidor_ProyectoRedes {
         jFrame.add(new windowServer(serverMulti));
     
         jFrame.pack();
-        jFrame.setBounds(20, 20, 400, 400);
-//        jFrame.setLocationRelativeTo(null);
+        //jFrame.setBounds(20, 20, 400, 400);
+        jFrame.setLocationRelativeTo(null);
         jFrame.setResizable(false);
 
         jFrame.setVisible(true);

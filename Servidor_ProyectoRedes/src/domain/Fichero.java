@@ -22,4 +22,6 @@ public class Fichero implements Serializable{
     public byte[] contenidoFichero = new byte[LONGITUD_MAXIMA];
     
     public final static int LONGITUD_MAXIMA=10;
+    
+    public String ruta_server="";
 }

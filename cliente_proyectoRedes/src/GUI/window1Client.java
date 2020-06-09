@@ -34,6 +34,8 @@ public class window1Client extends JInternalFrame implements ActionListener, Run
     JPasswordField tfContrasenna;
     myClient Client;
     Conexion c;
+    String rutaBD;
+    int idUsuario;
 
     public window1Client(myClient Client) {
         super();
@@ -47,8 +49,6 @@ public class window1Client extends JInternalFrame implements ActionListener, Run
         this.setLayout(null);
         this.setClosable(true);
         this.setBackground(new java.awt.Color(255, 255, 255));
-
-        this.setBounds(500, 100, 30, 10);
 
         this.lbUsuario = new JLabel("Nombre de Usuario");
         this.lbContrasenna = new JLabel("Contraseña");
@@ -82,22 +82,34 @@ public class window1Client extends JInternalFrame implements ActionListener, Run
     public void actionPerformed(ActionEvent ae) {
         if (ae.getSource().equals(btnInitSesion)) {
             try {
-                if (c.verificarUsuario(tfUsuario.getText(), tfContrasenna.getText()) == true) {
-                    tfUsuario.setText("");
-                    tfContrasenna.setText("");
-                    JFrame jFrame = new JFrame("Iniciar Sesiones");
+                String ruta = c.verificarUsuario(tfUsuario.getText(), tfContrasenna.getText());
+                if (!ruta.equals("incorrecto")) {
+                    System.out.println(">>>" + ruta);
+                    String partes[] = ruta.split(":");
+                    //System.out.println("Parte 1=>"+partes[0]+"\nParte 2 =>"+partes[1]);
+                    this.rutaBD = partes[0];
+                    this.idUsuario = Integer.parseInt(partes[1]);
+                }else{
+                    this.rutaBD="incorrecto";
+                }
+                
+
+                if (!this.rutaBD.equals("incorrecto")) {
+
+                    JFrame jFrame = new JFrame("Cliente :" + tfUsuario.getText());
 
                     jFrame.setPreferredSize(new Dimension(700, 400));
 
-                    jFrame.add(new window2Client(Client));
+                    jFrame.add(new window2Client(Client, this.rutaBD, this.idUsuario));
                     jFrame.pack();
 
                     jFrame.setLocationRelativeTo(null);
                     jFrame.setResizable(false);
-
+                    tfUsuario.setText("");
+                    tfContrasenna.setText("");
                     jFrame.setVisible(true);
-                    
-                }else{
+
+                } else {
                     tfUsuario.setText("");
                     tfContrasenna.setText("");
                     JOptionPane.showMessageDialog(null, "Los datos ingresados son incorrectos");
