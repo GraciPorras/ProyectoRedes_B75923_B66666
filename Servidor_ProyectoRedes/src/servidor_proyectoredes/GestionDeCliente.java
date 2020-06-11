@@ -5,7 +5,6 @@
  */
 package servidor_proyectoredes;
 
-
 import domain.Fichero;
 import domain.pideRuta;
 import java.io.FileInputStream;
@@ -15,10 +14,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
-/**
- *
- * @author ronal
- */
+import java.util.Arrays;
+
 
 class GestionDeCliente extends Thread {
     Socket socket;
@@ -39,87 +36,57 @@ class GestionDeCliente extends Thread {
     {
         try
         {
-            // Se abre el socket servidor
-            //ServerSocket socketServidor = new ServerSocket(puerto);
 
-            // Se espera un cliente
-            //System.out.println("Esperando a que se conecte un cliente");
-            //Socket cliente = socketServidor.accept();
+            //System.out.println("Aceptado cliente");
 
-            // Llega un cliente.
-            System.out.println("Aceptado cliente");
-
-            // Cuando se cierre el socket, esta opci�n hara que el cierre se
-            // retarde autom�ticamente hasta 10 segundos dando tiempo al cliente
-            // a leer los datos.
-            cliente.setSoLinger(true, 10);
-
-            // Se lee el mensaje de petici�n de fichero del cliente.
-            ObjectInputStream ois = new ObjectInputStream(cliente
-                    .getInputStream());
+            ObjectInputStream ois = new ObjectInputStream(cliente.getInputStream());
             Object mensaje = ois.readObject();
-            System.out.println("sssssssssssssssssssss");
+            
             if (mensaje instanceof pideRuta)
             {
-                
-                // Se muestra en pantalla el fichero pedido y se envia
-                System.out.println("Me piden: "
-                        + ((pideRuta) mensaje).nombreFichero);
+                //System.out.println("Me piden: "
+                       // + ((pideRuta) mensaje).nombreFichero);
                 enviaFichero(((pideRuta) mensaje).nombreFichero,
                        new ObjectOutputStream(cliente.getOutputStream()));
                 
             }else  if(mensaje instanceof Fichero){
-                System.out.println("eeeeeeeeeeeeeeeeee");
+                //System.out.println("eeeeeeeeeeeeeeeeee");
                 Fichero mensajeRecibido = (Fichero) mensaje;
-                // Se abre un fichero para empezar a copiar lo que se reciba.
+                
+                System.out.println(Arrays.toString(mensajeRecibido.contenidoFichero));
+                
                 FileOutputStream fos = new FileOutputStream(mensajeRecibido.nombreFichero);
+                
+                fos.write(mensajeRecibido.contenidoFichero, 0,mensajeRecibido.bytesValidos);
+                
                 Object mensajeAux;
                 do
                 {
-                    // Se lee el mensaje en una variabla auxiliar
+                    System.out.println(Arrays.toString(mensajeRecibido.contenidoFichero));
                     mensajeAux = ois.readObject();
 
-                    // Si es del tipo esperado, se trata
+                    
                     if (mensajeAux instanceof Fichero)
                     {
-                        System.out.println("aaaaaaaaaaaaaaaa");
+    
                         mensajeRecibido = (Fichero) mensajeAux;
-                        // Se escribe en pantalla y en el fichero
-                        System.out.print(new String(
-                        mensajeRecibido.contenidoFichero, 0,mensajeRecibido.bytesValidos));
+                        
+                        //System.out.print(new String(
+                        //mensajeRecibido.contenidoFichero, 0,mensajeRecibido.bytesValidos));
                         fos.write(mensajeRecibido.contenidoFichero, 0,mensajeRecibido.bytesValidos);
                     } else
                     {
-                    // Si no es del tipo esperado, se marca error y se termina
-                    // el bucle
+
                     System.err.println("Mensaje no esperado "
                     + mensajeAux.getClass().getName());
                     break;
                     }
                     
                 } while (!mensajeRecibido.ultimoMensaje);
-//                do
-//                {
-                    // Se escribe en pantalla y en el fichero
-//                    System.out.print(new String(
-//                            mensajeRecibido.contenidoFichero, 0,
-//                            mensajeRecibido.bytesValidos));
-//                    fos.write(mensajeRecibido.contenidoFichero, 0,
-//                            mensajeRecibido.bytesValidos);
-                    
-//                } while (!mensajeRecibido.ultimoMensaje);
 
-                // Se cierra socket y fichero
                 fos.close();
-                ois.close();
-
-                // Se muestra en pantalla el fichero pedido y se envia
-//                System.out.println("Me piden: "
-//                        + ((MensajeDameFichero) mensaje).nombreFichero);
-//                enviaFichero(((MensajeDameFichero) mensaje).nombreFichero,
-//                        new ObjectOutputStream(cliente.getOutputStream()));
-                
-                
+                //ois.close();
+                              
             }
             else
             {
@@ -127,10 +94,7 @@ class GestionDeCliente extends Thread {
                 System.err.println (
                         "Mensaje no esperado "+mensaje.getClass().getName());
             }
-            
-            // Cierre de sockets 
-            //cliente.close();
-            //socketServidor.close();
+
         } catch (Exception e)
         {
             e.printStackTrace();
@@ -142,7 +106,7 @@ class GestionDeCliente extends Thread {
     {
         try
         {
-            System.out.println("sssssssssssssssssssss");
+            //System.out.println("sssssssssssssssssssss");
             boolean enviadoUltimo=false;
             // Se abre el fichero.
             FileInputStream fis = new FileInputStream(fichero);
@@ -199,4 +163,5 @@ class GestionDeCliente extends Thread {
             e.printStackTrace();
         }
     }
+
 }
