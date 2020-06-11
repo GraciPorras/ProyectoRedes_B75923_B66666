@@ -27,7 +27,7 @@ public class Servidor_ProyectoRedes {
         jFrame.add(new windowServer(serverMulti));
     
         jFrame.pack();
-        //jFrame.setBounds(20, 20, 400, 400);
+        jFrame.setBounds(100, 50, 400, 400);
         jFrame.setLocationRelativeTo(null);
         jFrame.setResizable(false);
 

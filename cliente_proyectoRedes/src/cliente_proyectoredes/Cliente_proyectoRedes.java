@@ -8,6 +8,7 @@ package cliente_proyectoredes;
 import GUI.window1Client;
 import java.awt.Dimension;
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
 import javax.swing.JFrame;
@@ -22,7 +23,7 @@ public class Cliente_proyectoRedes {
     private PrintWriter out;
     private BufferedReader in;
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
 
         myClient client = new myClient(6666);
         client.start();
@@ -35,11 +36,11 @@ public class Cliente_proyectoRedes {
         jFrame.add(new window1Client(client));
 
         jFrame.pack();
-       jFrame.setLocationRelativeTo(null);
+        jFrame.setLocationRelativeTo(null);
+        jFrame.setLocationRelativeTo(null);
         jFrame.setResizable(false);
 
         jFrame.setVisible(true);
     }
 
 }
-
