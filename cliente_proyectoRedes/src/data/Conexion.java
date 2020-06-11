@@ -61,16 +61,4 @@ public class Conexion {
         instruccion.execute("CALL sp_insertarUsuarioArchivo ('"+idUsuario+"','"+nombreArchivo+"');");
         con.close(); 
     }
-    public ArrayList<String> listarRepositorio(int id) throws SQLException{
-        con=(Connection) DriverManager.getConnection(url,user,pass);
-        Statement s = (Statement) con.createStatement();
-        ResultSetImpl rs = (ResultSetImpl) s.executeQuery("CALL sp_listarRepositorio('"+id+"')");
-        ArrayList<String> reposi = new ArrayList<String>();
-        int cont=0;
-        while (rs.next()){
-            reposi.add(rs.getString(1));
-        }
-        con.close();
-        return reposi;
-    }
 }
