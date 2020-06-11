@@ -32,11 +32,13 @@ public class myClient extends Thread {
     public Socket socket;
     public String address;
     Conexion c;
+    ObjectOutputStream oos;
 
    public myClient(int socketPortNumber) throws IOException {
         this.socketPortNumber = socketPortNumber;
         this.address="localhost";
         this.socket = new Socket(address, this.socketPortNumber);
+        oos = new ObjectOutputStream(socket.getOutputStream());
     }
 
     @Override
@@ -53,8 +55,8 @@ public class myClient extends Thread {
             c.insertarUsuarioArchivo(idUsuario,nombreArchivo);
             System.out.println("El fichero es: " + fichero);
             
-
-            ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
+            
+            //oos = new ObjectOutputStream(socket.getOutputStream());
             
             boolean enviadoUltimo=false;
             FileInputStream fis = new FileInputStream(fichero);
@@ -106,7 +108,7 @@ public class myClient extends Thread {
                 oos.writeObject(mensaje);
             }
             // Se cierra el ObjectOutputStream
-            oos.close();
+            //oos.close();
         } catch (Exception e)
         {
             e.printStackTrace();
@@ -137,7 +139,6 @@ public class myClient extends Thread {
         {
             
             // Se env�a un mensaje de petici�n de fichero.
-            ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
             pideRuta mensaje = new pideRuta();
             mensaje.nombreFichero = fichero;
             oos.writeObject(mensaje);
@@ -150,7 +151,9 @@ public class myClient extends Thread {
 
             // Se crea un ObjectInputStream del socket para leer los mensajes
             // que contienen el fichero.
+            System.out.println("1");
             ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
+            System.out.println("2");    
             Fichero mensajeRecibido;
             Object mensajeAux;
             do
@@ -180,7 +183,7 @@ public class myClient extends Thread {
             
             // Se cierra socket y fichero
             fos.close();
-            ois.close();
+            //ois.close();
             //socket.close();
 
         } catch (Exception e)

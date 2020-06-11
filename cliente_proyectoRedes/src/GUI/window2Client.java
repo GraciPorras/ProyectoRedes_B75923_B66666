@@ -157,6 +157,7 @@ public class window2Client extends JInternalFrame implements ActionListener, Run
                 String url = "C:\\Users\\" + user + "\\Documents\\NetBeansProjects\\ProyectoRedes_B75923_B66666\\Servidor_ProyectoRedes\\"+this.rutaArchivoBD + "\\" + modelo.getValueAt(filaSelect, 1);
 //C:\Users\ronal\Documents\NetBeansProjects\ProyectoRedes_B75923_B66666\Servidor_ProyectoRedes\CarpetasUsuario\Ronald
                 client.pide(url, client.getSocket());
+                System.out.println("Ya pedi y me llego");
             }
         } else {
             JOptionPane.showMessageDialog(null, "La tabla esta vacia o no selecciono ningún empleado");
