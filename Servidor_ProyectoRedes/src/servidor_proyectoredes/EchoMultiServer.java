@@ -49,16 +49,7 @@ public class EchoMultiServer extends Thread {
             do {
                 System.out.println("Servidor ejecutando");
                 Socket socket = serverSocket.accept();
-                String sCarpAct = "CarpetasUsuario/Graciela";
-                File carpeta = new File(sCarpAct);
-                String[] listado = carpeta.list();
-                if (listado == null || listado.length == 0) {
-                    System.out.println("No hay elementos dentro de la carpeta actual");
-                } else {
-                    for (int i = 0; i < listado.length; i++) {
-                        System.out.println(listado[i]);
-                    }
-                }
+                
                 System.out.println("Cliente acceptado");
                 GestionDeCliente gestionCliente = new GestionDeCliente(socket, gestionClienteArray);
 

@@ -36,12 +36,15 @@ public class window2Client extends JInternalFrame implements ActionListener, Run
     JTable tabla;
     Conexion c;
     ArrayList<String> repositorios;
-
-    public window2Client(myClient Client, String rutaBD, int idUsuario) throws SQLException {
+    String listaRepositorios,nombreRepos;
+    
+    public window2Client(myClient Client, String rutaBD, int idUsuario,String listaRepositorios,String nombreRepos) throws SQLException {
         super("Mi tabla");
         this.client = Client;
         this.rutaArchivoBD = rutaBD;
         this.idUsuario = idUsuario;
+        this.listaRepositorios = listaRepositorios;
+        this.nombreRepos = nombreRepos;
         init();
     }//Constructor
 
@@ -60,7 +63,7 @@ public class window2Client extends JInternalFrame implements ActionListener, Run
         tabla.getColumnModel().getColumn(1).setPreferredWidth(280);
 
         c = new Conexion();
-        repositorios = c.listarRepositorio(this.idUsuario);
+        repositorios=sacarVectorRepositorios(listaRepositorios);
         String repo[] = new String[2];
         for (int i = 0; i < repositorios.size(); i++) {
             repo[0] = String.valueOf(i + 1);
@@ -101,7 +104,22 @@ public class window2Client extends JInternalFrame implements ActionListener, Run
         this.add(this.btnpedirRepositorio);
         this.btnpedirRepositorio.addActionListener(this);
     }
-
+    public ArrayList<String> sacarVectorRepositorios(String listaRepositorios){
+        ArrayList<String> listaRepos = new ArrayList<String>();
+        int cont = 0;
+        for (int i = 0; i < listaRepositorios.length(); i++) {
+            if (listaRepositorios.charAt(i) == ':') {
+                cont++;
+            }
+        }
+        System.out.println("Hay " + cont + " de :");
+        String[] partes = listaRepositorios.split(":");
+        for (int i = 0; i < cont; i++) {
+            listaRepos.add(partes[i]);
+            System.out.println("El nombre del archivo es: " + listaRepos.get(i));
+        }
+        return listaRepos;
+    }
     public void listar() throws SQLException {
         System.out.println("El tamaño del array es:"+modelo.getRowCount());
         while(modelo.getRowCount()>0){
@@ -109,7 +127,9 @@ public class window2Client extends JInternalFrame implements ActionListener, Run
             modelo.removeRow(0);
         }
         repositorios.clear();
-        repositorios = c.listarRepositorio(this.idUsuario);
+        String lista="";
+        lista= client.pideRepositorio(nombreRepos, client.getSocket());
+        repositorios = sacarVectorRepositorios(lista);
         String repo[] = new String[2];
         for (int i = 0; i < repositorios.size(); i++) {
             repo[0] = String.valueOf(i + 1);
@@ -117,7 +137,7 @@ public class window2Client extends JInternalFrame implements ActionListener, Run
             modelo.addRow(repo);
         }
     }
-
+    
     @Override
     public void actionPerformed(ActionEvent ae) {
         if (ae.getSource().equals(btnAgregaArchivo)) {

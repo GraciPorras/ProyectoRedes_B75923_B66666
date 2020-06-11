@@ -6,6 +6,7 @@
 package servidor_proyectoredes;
 
 import domain.Fichero;
+import domain.MiRepositorio;
 import domain.pideRuta;
 import java.io.File;
 import java.io.FileInputStream;
@@ -20,6 +21,7 @@ import java.util.Arrays;
 class GestionDeCliente extends Thread {
 
     Socket socket;
+    ObjectOutputStream oos;
     private ArrayList<GestionDeCliente> gestionClienteArray;
 
     public GestionDeCliente(Socket socket, ArrayList gestionClienteArray) {
@@ -85,6 +87,27 @@ class GestionDeCliente extends Thread {
 
                     //fos.close();
                     //ois.close();
+                } else if (mensaje instanceof MiRepositorio) {
+                    MiRepositorio mensajeRecibido = (MiRepositorio) mensaje;
+                    System.out.println(mensajeRecibido.repositorioUsuario);
+                    String sCarpAct = "CarpetasUsuario/" + mensajeRecibido.repositorioUsuario;
+                    File carpeta = new File(sCarpAct);
+                    String[] listado = carpeta.list();
+                    String listaRepositorios = "";
+                    if (listado == null || listado.length == 0) {
+                        System.out.println("No hay elementos dentro de la carpeta actual");
+                    } else {
+                        for (int i = 0; i < listado.length; i++) {
+                            listaRepositorios += listado[i] + ":";
+                        }
+                        System.out.println(listaRepositorios);
+                    }
+                    oos = new ObjectOutputStream(cliente.getOutputStream());
+                    ((MiRepositorio) mensaje).listaRepositorios= listaRepositorios;
+                    System.out.println("Estoy escribiendo al cliente");
+                    oos.writeObject(mensaje);
+                    System.out.println("Ahora continuo");
+
                 } else {
                     // Si no es el mensaje esperado, se avisa y se sale todo.
                     System.err.println(
@@ -100,7 +123,7 @@ class GestionDeCliente extends Thread {
 
     private void enviaFichero(String fichero, ObjectOutputStream oos) {
         try {
-            
+
             //System.out.println("sssssssssssssssssssss");
             boolean enviadoUltimo = false;
             // Se abre el fichero.
@@ -154,5 +177,60 @@ class GestionDeCliente extends Thread {
             e.printStackTrace();
         }
     }
+    private void enviaMiReposotorio(String fichero, ObjectOutputStream oos) {
+        try {
 
+            //System.out.println("sssssssssssssssssssss");
+            boolean enviadoUltimo = false;
+            // Se abre el fichero.
+            FileInputStream fis = new FileInputStream(fichero);
+
+            // Se instancia y rellena un mensaje de envio de fichero
+            Fichero mensaje = new Fichero();
+            mensaje.nombreFichero = fichero;
+
+            // Se leen los primeros bytes del fichero en un campo del mensaje
+            int leidos = fis.read(mensaje.contenidoFichero);
+
+            // Bucle mientras se vayan leyendo datos del fichero
+            while (leidos > -1) {
+
+                // Se rellena el n�mero de bytes leidos
+                mensaje.bytesValidos = leidos;
+
+                // Si no se han leido el m�ximo de bytes, es porque el fichero
+                // se ha acabado y este es el �ltimo mensaje
+                if (leidos < Fichero.LONGITUD_MAXIMA) {
+                    mensaje.ultimoMensaje = true;
+                    enviadoUltimo = true;
+                } else {
+                    mensaje.ultimoMensaje = false;
+                }
+                // Se env�a por el socket
+                oos.writeObject(mensaje);
+
+                // Si es el �ltimo mensaje, salimos del bucle.
+                if (mensaje.ultimoMensaje) {
+                    break;
+                }
+
+                // Se crea un nuevo mensaje
+                mensaje = new Fichero();
+                mensaje.nombreFichero = fichero;
+
+                // y se leen sus bytes.
+                leidos = fis.read(mensaje.contenidoFichero);
+            }
+
+            if (enviadoUltimo == false) {
+                mensaje.ultimoMensaje = true;
+                mensaje.bytesValidos = 0;
+                oos.writeObject(mensaje);
+            }
+            // Se cierra el ObjectOutputStream
+            //oos.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

@@ -36,6 +36,7 @@ public class window1Client extends JInternalFrame implements ActionListener, Run
     Conexion c;
     String rutaBD;
     int idUsuario;
+    String nombreUsuario,listaRepositorios;
 
     public window1Client(myClient Client) {
         super();
@@ -89,18 +90,23 @@ public class window1Client extends JInternalFrame implements ActionListener, Run
                     //System.out.println("Parte 1=>"+partes[0]+"\nParte 2 =>"+partes[1]);
                     this.rutaBD = partes[0];
                     this.idUsuario = Integer.parseInt(partes[1]);
+                    nombreUsuario = this.tfUsuario.getText();
+                    System.out.println("Nombre:"+nombreUsuario);
+                    listaRepositorios=Client.pideRepositorio(nombreUsuario, Client.getSocket());
                 }else{
                     this.rutaBD="incorrecto";
                 }
                 
 
                 if (!this.rutaBD.equals("incorrecto")) {
-
+                    
+                   
+                    
                     JFrame jFrame = new JFrame("Cliente :" + tfUsuario.getText());
 
                     jFrame.setPreferredSize(new Dimension(700, 400));
 
-                    jFrame.add(new window2Client(Client, this.rutaBD, this.idUsuario));
+                    jFrame.add(new window2Client(Client, this.rutaBD, this.idUsuario,listaRepositorios,nombreUsuario));
                     jFrame.pack();
 
                     jFrame.setLocationRelativeTo(null);
