@@ -140,9 +140,10 @@ public class window2Client extends JInternalFrame implements ActionListener, Run
 
         } else if (ae.getSource().equals(btnEnviarArchivo)) {
             tfArchivo.setText("");
-            client.enviaFichero(this.rutaArchivo, "localhost", 6666, this.rutaArchivoBD, this.idUsuario);
+            client.enviaFichero(this.rutaArchivo, client.getSocket(), this.rutaArchivoBD, this.idUsuario);
             try {
                 listar();
+                System.out.println("llegaaaaaaa");
             } catch (SQLException ex) {
                 Logger.getLogger(window2Client.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -155,7 +156,7 @@ public class window2Client extends JInternalFrame implements ActionListener, Run
                
                 String url = "C:\\Users\\" + user + "\\Documents\\NetBeansProjects\\ProyectoRedes_B75923_B66666\\Servidor_ProyectoRedes\\"+this.rutaArchivoBD + "\\" + modelo.getValueAt(filaSelect, 1);
 //C:\Users\ronal\Documents\NetBeansProjects\ProyectoRedes_B75923_B66666\Servidor_ProyectoRedes\CarpetasUsuario\Ronald
-                client.pide(url, "localhost", 6666);
+                client.pide(url, client.getSocket());
             }
         } else {
             JOptionPane.showMessageDialog(null, "La tabla esta vacia o no selecciono ningún empleado");

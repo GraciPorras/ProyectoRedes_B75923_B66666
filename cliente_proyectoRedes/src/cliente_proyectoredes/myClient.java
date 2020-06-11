@@ -29,97 +29,95 @@ import java.util.logging.Logger;
 public class myClient extends Thread {
 
     private int socketPortNumber;// numero donde se va a guardar puerto
-    PrintStream send;
-    BufferedReader receive;
+    public Socket socket;
+    public String address;
     Conexion c;
 
-    public myClient(int socketPortNumber) {
+   public myClient(int socketPortNumber) throws IOException {
         this.socketPortNumber = socketPortNumber;
+        this.address="localhost";
+        this.socket = new Socket(address, this.socketPortNumber);
     }
 
     @Override
     public void run() {
 
     }
+     public void enviaFichero(String fichero, Socket socket, String rutaBDServer,int idUsuario)
+    {
+        try
+        {
 
-    public void enviaFichero(String fichero, String servidor, int puerto, String rutaBDServer,int idUsuario) {
-        try {
             String nombreArchivo = sacarNombreArchivo(fichero);
             c = new Conexion();
             c.insertarUsuarioArchivo(idUsuario,nombreArchivo);
             System.out.println("El fichero es: " + fichero);
+            
 
-            // Se abre el socket.
-            Socket socket = new Socket(servidor, puerto);
-
-            // Se env�a un mensaje de petici�n de fichero.
-            ObjectOutputStream oos = new ObjectOutputStream(socket
-                    .getOutputStream());
-
-            boolean enviadoUltimo = false;
-            // Se abre el fichero.
+            ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
+            
+            boolean enviadoUltimo=false;
             FileInputStream fis = new FileInputStream(fichero);
-//            System.out.println("llllllllll"+fis.read());
+            
             // Se instancia y rellena un mensaje de envio de fichero
             Fichero mensaje = new Fichero();
             mensaje.nombreFichero = rutaBDServer + "/" + nombreArchivo;
-//            System.out.println("dddddddd"+mensaje.nombreFichero);
-
+            //mensaje.nombreFichero = fichero;
+            
             // Se leen los primeros bytes del fichero en un campo del mensaje
             int leidos = fis.read(mensaje.contenidoFichero);
-
+            
             // Bucle mientras se vayan leyendo datos del fichero
-            while (leidos > -1) {
-//                System.out.println("bits----> "+leidos);
+            while (leidos > -1)
+            {
+                
                 // Se rellena el n�mero de bytes leidos
                 mensaje.bytesValidos = leidos;
-//                 System.out.println("bits validos ----> "+mensaje.bytesValidos);
+                
                 // Si no se han leido el m�ximo de bytes, es porque el fichero
                 // se ha acabado y este es el �ltimo mensaje
-                if (leidos < Fichero.LONGITUD_MAXIMA) {
-//                    System.out.println("bits----------> "+leidos);
-
+                if (leidos < Fichero.LONGITUD_MAXIMA)
+                {
                     mensaje.ultimoMensaje = true;
-                    enviadoUltimo = true;
-                } else {
+                    enviadoUltimo=true;
+                }
+                else{
                     mensaje.ultimoMensaje = false;
                 }
-
                 // Se env�a por el socket
-//                System.out.println("MENSje---> "+mensaje.toString());
                 oos.writeObject(mensaje);
-//                System.out.println("MENSjefffffffffffffffffffe---> "+mensaje.toString());
+                
                 // Si es el �ltimo mensaje, salimos del bucle.
-                if (mensaje.ultimoMensaje) {
+                if (mensaje.ultimoMensaje)
                     break;
-                }
-
+                
                 // Se crea un nuevo mensaje
                 mensaje = new Fichero();
                 mensaje.nombreFichero = fichero;
-
+                
                 // y se leen sus bytes.
                 leidos = fis.read(mensaje.contenidoFichero);
-//                System.out.println("fiiiiiiiiiiiin bits----> "+leidos);
             }
-
-            if (enviadoUltimo == false) {
-                mensaje.ultimoMensaje = true;
-                mensaje.bytesValidos = 0;
+            
+            if (enviadoUltimo==false)
+            {
+                mensaje.ultimoMensaje=true;
+                mensaje.bytesValidos=0;
                 oos.writeObject(mensaje);
             }
             // Se cierra el ObjectOutputStream
             oos.close();
-        } catch (Exception e) {
+        } catch (Exception e)
+        {
             e.printStackTrace();
         }
     }
 
-    public String sacarNombreArchivo(String fichero) {
+     public String sacarNombreArchivo(String fichero) {
         String nombreArchivo = "";
         int cont = 0;
         for (int i = 0; i < fichero.length(); i++) {
-            if (fichero.charAt(i) == '\\') {
+            if (fichero.charAt(i) == '\\' ||fichero.charAt(i)=='/') {
                 cont++;
             }
         }
@@ -133,12 +131,10 @@ public class myClient extends Thread {
 
         return nombreArchivo;
     }
-    
-    public void pide(String fichero, String servidor, int puerto){
+
+    public void pide(String fichero,Socket socket){
         try
         {
-            // Se abre el socket.
-            Socket socket = new Socket(servidor, puerto);
             
             // Se env�a un mensaje de petici�n de fichero.
             ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
@@ -147,7 +143,9 @@ public class myClient extends Thread {
             oos.writeObject(mensaje);
 
             // Se abre un fichero para empezar a copiar lo que se reciba.
+            System.out.println("fich--->"+fichero);
             String nombreArchivo= sacarNombreArchivo(fichero);
+            System.out.println("nombreeeeee"+nombreArchivo);
             FileOutputStream fos = new FileOutputStream("MisArchivos/"+nombreArchivo);
 
             // Se crea un ObjectInputStream del socket para leer los mensajes
@@ -183,12 +181,36 @@ public class myClient extends Thread {
             // Se cierra socket y fichero
             fos.close();
             ois.close();
-            socket.close();
+            //socket.close();
 
         } catch (Exception e)
         {
             e.printStackTrace();
         }
+    }
+
+    public int getSocketPortNumber() {
+        return socketPortNumber;
+    }
+
+    public void setSocketPortNumber(int socketPortNumber) {
+        this.socketPortNumber = socketPortNumber;
+    }
+
+    public Socket getSocket() {
+        return socket;
+    }
+
+    public void setSocket(Socket socket) {
+        this.socket = socket;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 
 }
