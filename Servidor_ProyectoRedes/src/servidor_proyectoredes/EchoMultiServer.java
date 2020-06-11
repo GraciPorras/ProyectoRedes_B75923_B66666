@@ -1,14 +1,14 @@
-    /*
+/*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
 package servidor_proyectoredes;
 
-
 import domain.Fichero;
 import domain.pideRuta;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -29,7 +29,7 @@ import java.util.logging.Logger;
  * @author Graciela Porras
  */
 public class EchoMultiServer extends Thread {
-    
+
     private int socketPorttNumber;//numero de puerto tiene que ser igual cliente-servidor
     private InetAddress address;
     private boolean conectado;
@@ -45,10 +45,20 @@ public class EchoMultiServer extends Thread {
     public void run() {
         try {
             ServerSocket serverSocket = new ServerSocket(this.socketPorttNumber);
-            
+
             do {
                 System.out.println("Servidor ejecutando");
                 Socket socket = serverSocket.accept();
+                String sCarpAct = "CarpetasUsuario/Graciela";
+                File carpeta = new File(sCarpAct);
+                String[] listado = carpeta.list();
+                if (listado == null || listado.length == 0) {
+                    System.out.println("No hay elementos dentro de la carpeta actual");
+                } else {
+                    for (int i = 0; i < listado.length; i++) {
+                        System.out.println(listado[i]);
+                    }
+                }
                 System.out.println("Cliente acceptado");
                 GestionDeCliente gestionCliente = new GestionDeCliente(socket, gestionClienteArray);
 
@@ -58,7 +68,7 @@ public class EchoMultiServer extends Thread {
                 hilo.start();
 //                socket.close();
             } while (true);
-            
+
         } catch (IOException ex) {
             Logger.getLogger(EchoMultiServer.class.getName()).log(Level.SEVERE, null, ex);
         }

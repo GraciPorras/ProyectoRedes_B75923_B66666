@@ -154,7 +154,7 @@ public class window2Client extends JInternalFrame implements ActionListener, Run
                 System.out.println("ESTO TIENE>" + this.rutaArchivoBD + "/" + modelo.getValueAt(filaSelect, 1));
                 String user = System.getProperty("user.name");
                
-                String url = "C:\\Users\\" + user + "\\Documents\\NetBeansProjects\\ProyectoRedes_B75923_B66666\\Servidor_ProyectoRedes\\"+this.rutaArchivoBD + "\\" + modelo.getValueAt(filaSelect, 1);
+                String url = "C:\\Users\\" + user + "\\Documents\\Servidor_ProyectoRedes\\"+this.rutaArchivoBD + "\\" + modelo.getValueAt(filaSelect, 1);
 //C:\Users\ronal\Documents\NetBeansProjects\ProyectoRedes_B75923_B66666\Servidor_ProyectoRedes\CarpetasUsuario\Ronald
                 client.pide(url, client.getSocket());
                 System.out.println("Ya pedi y me llego");

@@ -7,6 +7,7 @@ package servidor_proyectoredes;
 
 import domain.Fichero;
 import domain.pideRuta;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 
@@ -99,6 +100,7 @@ class GestionDeCliente extends Thread {
 
     private void enviaFichero(String fichero, ObjectOutputStream oos) {
         try {
+            
             //System.out.println("sssssssssssssssssssss");
             boolean enviadoUltimo = false;
             // Se abre el fichero.
